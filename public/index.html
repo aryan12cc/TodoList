@@ -8,17 +8,20 @@
 </head>
 <body>
     <h1>My To-Do List</h1>
-    <form id="addItemForm" class="sideAddandDelete">
-        <input type="text" id="addItem" placeholder="Add a new item" class="addInput" required>
-        <button type="submit" class="addButton">Add</button>
-    </form>
-    <form id="deleteItemForm" class="sideAddandDelete">
-        <input type="text" id="deleteItem" placeholder="Delete any item" class="deleteInput sideInput" required>
-        <button type="submit" class="deleteButton">Delete</button>
-    </form>
     <ul id="todoList">
         <!-- To-Do items will be added here dynamically -->
     </ul>
+    <form id="addItemForm">
+        <input type="text" id="addItem" placeholder="Add a new item" class="addInput" required>
+        <button type="submit" class="addButton">Add</button>
+    </form>
+
+    <button type="submit" class="deleteButton"> Delete all checked items </button>
+
+    <form id="deleteItemForm">
+        <input type="text" id="deleteItem" placeholder="Delete any item" class="deleteInput sideInput" required>
+        <button type="submit" class="deleteButton">Delete</button>
+    </form>
     <script src="script.js"></script>
 </body>
 </html>

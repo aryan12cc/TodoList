@@ -8,11 +8,10 @@ h1 {
 }
 
 ul {
-    list-style-type: disc;
+    list-style-type: none;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
-
 li {
     padding: 10px;
 }
@@ -29,11 +28,6 @@ form {
     padding: 8px;
 }
 
-.sideAddandDelete {
-    display: inline-block;
-    margin-right: 20px;
-}
-
 .addButton {
     padding: 8px 12px;
     background-color: #4CAF50;
@@ -45,7 +39,54 @@ form {
 .deleteButton {
     padding: 8px 12px;
     background-color: #D11A20;
+    margin-top: 40px;
     color: #fff;
     border: none;
     cursor: pointer;
+}
+
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 45px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+input[type="checkbox"] {
+    position: absolute;
+    left: 0;
+    top: -4px;
+}
+
+span.checkmark {
+    position: absolute;
+    top: -4px;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+}
+
+input[type="checkbox"]:checked + span.checkmark {
+    background-color: #2196F3;
+    border: 1px solid #2196F3;
+}
+
+span.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+input[type="checkbox"]:checked + span.checkmark:after {
+    display: block;
 }
