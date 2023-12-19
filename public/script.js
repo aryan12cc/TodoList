@@ -55,16 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const todoListItems = document.querySelectorAll('#todoList li');
         const itemList = Array.from(todoListItems).map(item => item.textContent);
 
-
         const checkboxes = todoList.querySelectorAll('input[type="checkbox"]');
 
         const checkBoxList = Array.from(checkboxes).map(item => item.checked);
-
-        checkboxes.forEach(checkbox => {
-            const itemId = checkbox.id;
-            const isChecked = checkbox.checked;
-        });
-
 
         fetch('/api/UpdateAllItems', {
             method: 'POST',
@@ -88,15 +81,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const todoListItems = document.querySelectorAll('#todoList li');
         const itemList = Array.from(todoListItems).map(item => item.textContent);
 
-
         const checkboxes = todoList.querySelectorAll('input[type="checkbox"]');
 
         const checkBoxList = Array.from(checkboxes).map(item => item.checked);
-
-        checkboxes.forEach(checkbox => {
-            const itemId = checkbox.id;
-            const isChecked = checkbox.checked;
-        });
 
         fetch('/api/DeleteCheckedItems', {
             method: 'POST',
