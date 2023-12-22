@@ -1,34 +1,28 @@
-/*
-Todo: 
-- Make the checkboxes a button, and update it in server.js API
-- Get the API and delete the items
-*/
-
 document.addEventListener('DOMContentLoaded', function () {
-    var addItemForm = document.getElementById('addItemForm');
-    var todoList = document.getElementById('todoList');
-    var addItemInput = document.getElementById('addItem');
-    var deleteItems = document.getElementById('deleteItemsButton');
+    var addItemFormId = document.getElementById('addItemForm');
+    var todoListId = document.getElementById('todoList');
+    var addItemInputId = document.getElementById('addItemInput');
+    var deleteItemsId = document.getElementById('deleteItems');
 
     fetchTodoList();
 
-    addItemForm.addEventListener('submit', function (event) {
+    addItemFormId.addEventListener('submit', function (event) {
         event.preventDefault();
         addItem();
     });
 
-    todoList.addEventListener('change', function (event) {
+    todoListId.addEventListener('change', function (event) {
         event.preventDefault();
-        updateAllItems();
+        updateAndDeleteItems('/api/UpdateAllItems');
     });
 
-    deleteItems.addEventListener('click', function (event) {
+    deleteItemsId.addEventListener('click', function (event) {
         event.preventDefault();
-        deleteCheckedItems();
+        updateAndDeleteItems('/api/DeleteCheckedItems');
     });
 
     function addItem() {
-        var addItemText = addItemInput.value.trim();
+        var addItemText = addItemInputId.value.trim();
 
         if (addItemText !== '') {
             fetch('/api/AddItem', {
@@ -42,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.success) {
                         fetchTodoList();
-                        addItemInput.value = '';
+                        addItemInputId.value = '';
                     } else {
                         console.error('Failed to add item:', data.message);
                     }
@@ -51,46 +45,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function updateAllItems() {
+    function getItemsAndCheckBoxList() {
         const todoListItems = document.querySelectorAll('#todoList li');
         const itemList = Array.from(todoListItems).map(item => item.textContent);
-
-        const checkboxes = todoList.querySelectorAll('input[type="checkbox"]');
-
+        const checkboxes = todoListId.querySelectorAll('input[type="checkbox"]');
         const checkBoxList = Array.from(checkboxes).map(item => item.checked);
-
-        fetch('/api/UpdateAllItems', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ list: itemList, checkbox: checkBoxList}),
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    fetchTodoList();
-                } else {
-                    console.error('Failed to add item:', data.message);
-                }
-            })
-            .catch(error => console.error(error));
+        return {items: itemList, checkbox: checkBoxList};
     }
 
-    function deleteCheckedItems() {
-        const todoListItems = document.querySelectorAll('#todoList li');
-        const itemList = Array.from(todoListItems).map(item => item.textContent);
+    function updateAndDeleteItems(url) {
+        const todoList = getItemsAndCheckBoxList();
 
-        const checkboxes = todoList.querySelectorAll('input[type="checkbox"]');
-
-        const checkBoxList = Array.from(checkboxes).map(item => item.checked);
-
-        fetch('/api/DeleteCheckedItems', {
+        fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ list: itemList, checkbox: checkBoxList}),
+            body: JSON.stringify({ list: todoList.items, checkbox: todoList.checkbox}),
         })
             .then(response => response.json())
             .then(data => {
@@ -101,29 +72,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
             .catch(error => console.error(error));
-    //     var deleteItemText = deleteItemInput.value.trim();
-
-    //     if(deleteItemText !== '') {
-    //         // node request to delete the item from todo list
-    //         fetch('/api/deleteitem', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({ newItem: deleteItemText }),
-    //         })
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 if(data.success) {
-    //                     fetchTodoList();
-    //                     deleteItemInput.value = '';
-    //                 }
-    //                 else {
-    //                     console.error('Failed to delete item: ',data.message);
-    //                 }
-    //             })
-    //             .catch(error => console.error('Error'))
-    //     }
     }
 
     function fetchTodoList() {
@@ -135,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error(error));
     }
 
-    // Function to render the to-do list in the UI
     function renderTodoList(items) {
 
         var actualList = []
@@ -144,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
             actualList.push(items[i].content);
         }
 
-        todoList.innerHTML = '';
+        todoListId.innerHTML = '';
         for(let i = 0; i < actualList.length; i++)
         {
             var newItem = document.createElement('li');
@@ -165,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
             label.appendChild(document.createTextNode(actualList[i]));
 
             newItem.appendChild(label);
-            todoList.appendChild(newItem);
+            todoListId.appendChild(newItem);
         }
     }
 });

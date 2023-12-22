@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { todo } = require('node:test');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,31 +31,26 @@ app.post('/api/AddItem', (req, res) => {
     res.json({ success: true, message: 'Item added successfully.' });
 });
 
-app.post('/api/UpdateAllItems', (req, res) => {
+function UpdateAndDeleteItems(req, operation) {
     const currentTodoList = req.body.list;
     const currentCheckmarkList = req.body.checkbox;
     todoList = [];
-    for(let i = 0; i < currentTodoList.length; i++)
-    {
-        let item = {content: currentTodoList[i], isChecked: currentCheckmarkList[i]};
-        todoList.push(item);
-    }
-    res.json({ success: true, message: 'Todo List updated successfully.'});
-});
-
-app.post('/api/DeleteCheckedItems', (req, res) => {
-    const currentTodoList = req.body.list;
-    const currentCheckmarkList = req.body.checkbox;
-    todoList = []
-    for(let i = 0; i < currentCheckmarkList.length; i++)
-    {
-        if(currentCheckmarkList[i] == true)
-        {
+    for(let i = 0; i < currentTodoList.length; i++) {
+        if(operation == "delete" && currentCheckmarkList[i] == true) {
             continue;
         }
         let item = {content: currentTodoList[i], isChecked: currentCheckmarkList[i]};
         todoList.push(item);
     }
+}
+
+app.post('/api/UpdateAllItems', (req, res) => {
+    UpdateAndDeleteItems(req, "update");
+    res.json({ success: true, message: 'Todo List updated successfully.'});
+});
+
+app.post('/api/DeleteCheckedItems', (req, res) => {
+    UpdateAndDeleteItems(req, "delete");
     res.json({ success: true, message: 'Todo List updated successfully.'});
 });
 
