@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     todoListId.addEventListener('change', function (event) {
         event.preventDefault();
-        updateAndDeleteItems('/api/UpdateAllItems');
+        postListToAPI('/api/UpdateAllItems');
     });
 
     deleteItemsId.addEventListener('click', function (event) {
         event.preventDefault();
-        updateAndDeleteItems('/api/DeleteCheckedItems');
+        postListToAPI('/api/DeleteCheckedItems');
     });
 
     function addItem() {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return {items: itemList, checkbox: checkBoxList};
     }
 
-    function updateAndDeleteItems(url) {
+    function postListToAPI(url) {
         const todoList = getItemsAndCheckBoxList();
 
         fetch(url, {
