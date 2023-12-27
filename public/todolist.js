@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     var addItemFormId = document.getElementById('addItemForm');
     var todoListId = document.getElementById('todoList');
     var addItemInputId = document.getElementById('addItemInput');
     var deleteItemsId = document.getElementById('deleteItems');
-
+    
     fetchTodoList();
 
     addItemFormId.addEventListener('submit', function (event) {
