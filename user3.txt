@@ -1,6 +1,0 @@
-[
-  {
-    "content": "bfdj",
-    "isChecked": false
-  }
-]
