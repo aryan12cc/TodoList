@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,33 @@ const item = {
 
 let userTodoList = [];
 let userTodoListFile = '';
+
+function hashPasswordAndAppend(username, passwordToHash) {
+    console.log('password to hash:', passwordToHash);
+    const saltRounds = 10;
+        bcrypt.hash(passwordToHash, saltRounds, (err, hash) => {
+        if(err) {
+            console.error('Error hashing password:', err);
+        }
+        else {
+            console.log('hash:', hash);
+            const data = username + ':' + hash + '\n';
+            appendToFile(DataBase, data);
+        }
+    });
+}
+
+function comparePasswords(passwordToCheck, hashedPassword) {
+        bcrypt.compare(passwordToCheck, hashedPassword, (err, res) => {
+        if(err) {
+            console.error('Error comparing passwords:', err);
+        }
+        else {
+            if(res) return true;
+            return false;
+        }
+    });
+}
 
 app.get('/api/TodoList', (req, res) => {
     res.json(userTodoList);
@@ -81,14 +109,23 @@ function searchFile(filePath, username, password, checkPasssword) {
         const data = fs.readFileSync(filePath, 'utf8');
 
         const allUsers = data.split('\n');
+        const regex = /^(.*?):(.*)$/;
 
         for(const currentUser of allUsers) {
-            const [currentUsername, currentPassword] = currentUser.split(':');
-            if(username === currentUsername && password === currentPassword) {
-                return true;
+            const match = currentUser.match(regex);
+
+            if(match) {
+                const currentUsername = match[1];
+                const currentPassword = match[2];
+                if(username === currentUsername && comparePasswords(password, currentPassword)) {
+                    return true;
+                }
+                if(username === currentUsername && !checkPasssword) {
+                    return true;
+                }
             }
-            if(username === currentUsername && !checkPasssword) {
-                return true;
+            else {
+                console.error('Invalid format for username:password');
             }
         }
         return false;
@@ -153,8 +190,7 @@ app.post('/api/RegisterUser', (req, res) => {
         res.json({success: false, message: 'Password must contain a special character.'});
         return;
     }
-    const data = req.body.username + ':' + req.body.password + '\n';
-    appendToFile(DataBase, data);
+    hashPasswordAndAppend(req.body.username, req.body.password);
     res.json({success: true, message: 'Username added. Please login.'});
 });
 
