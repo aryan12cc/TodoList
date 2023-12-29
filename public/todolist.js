@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var addItemFormId = document.getElementById('addItemForm');
-    var todoListId = document.getElementById('todoList');
-    var addItemInputId = document.getElementById('addItemInput');
-    var deleteItemsId = document.getElementById('deleteItems');
-    
+    let addItemFormId = document.getElementById('addItemForm');
+    let todoListId = document.getElementById('todoList');
+    let addItemInputId = document.getElementById('addItemInput');
+    let deleteItemsId = document.getElementById('deleteItems');
+
     fetchTodoList();
 
     addItemFormId.addEventListener('submit', function (event) {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function addItem() {
-        var addItemText = addItemInputId.value.trim();
+        let addItemText = addItemInputId.value.trim();
 
         if (addItemText !== '') {
             fetch('/api/AddItem', {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderTodoList(items) {
 
-        var actualList = []
+        let actualList = []
         for(let i = 0; i < items.length; i++)
         {
             actualList.push(items[i].content);
@@ -94,16 +94,16 @@ document.addEventListener('DOMContentLoaded', function() {
         todoListId.innerHTML = '';
         for(let i = 0; i < actualList.length; i++)
         {
-            var newItem = document.createElement('li');
+            let newItem = document.createElement('li');
 
-            var label = document.createElement('label');
+            let label = document.createElement('label');
             label.className = 'checkbox-container';
 
-            var checkbox = document.createElement('input');
+            let checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.checked = items[i].isChecked;
 
-            var checkmark = document.createElement('span');
+            let checkmark = document.createElement('span');
             checkmark.className = 'checkmark';
 
             label.appendChild(checkbox);
