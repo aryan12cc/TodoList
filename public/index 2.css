@@ -49,10 +49,3 @@ button:hover {
     color: #4CAF50;
     cursor: pointer;
 }
-
-ul {
-    text-align: left;
-    font-size: 12px;
-    list-style-position: outside;
-    padding-left: 20px;
-}
