@@ -23,30 +23,27 @@ let userTodoList = [];
 let userTodoListFile = '';
 
 function hashPasswordAndAppend(username, passwordToHash) {
-    console.log('password to hash:', passwordToHash);
     const saltRounds = 10;
         bcrypt.hash(passwordToHash, saltRounds, (err, hash) => {
         if(err) {
             console.error('Error hashing password:', err);
         }
         else {
-            console.log('hash:', hash);
             const data = username + ':' + hash + '\n';
             appendToFile(DataBase, data);
         }
     });
 }
 
-function comparePasswords(passwordToCheck, hashedPassword) {
-        bcrypt.compare(passwordToCheck, hashedPassword, (err, res) => {
-        if(err) {
-            console.error('Error comparing passwords:', err);
-        }
-        else {
-            if(res) return true;
-            return false;
-        }
-    });
+async function comparePasswords(passwordToCheck, hashedPassword) {
+    try {
+        const res = await bcrypt.compare(passwordToCheck, hashedPassword);
+        return res;
+    }
+    catch (error) {
+        console.error('Error comparing passwords:', error);
+        return false;
+    }
 }
 
 app.get('/api/TodoList', (req, res) => {
@@ -113,7 +110,6 @@ function searchFile(filePath, username, password, checkPasssword) {
 
         for(const currentUser of allUsers) {
             const match = currentUser.match(regex);
-
             if(match) {
                 const currentUsername = match[1];
                 const currentPassword = match[2];
@@ -207,6 +203,12 @@ app.post('/api/UpdateAllItems', (req, res) => {
 app.post('/api/DeleteCheckedItems', (req, res) => {
     operateTodoList(req, 'delete');
     res.json({ success: true, message: 'Todo List updated successfully.'});
+});
+
+app.post('/api/LogoutUser', (req, res) => {
+    userTodoList = [];
+    userTodoListFile = '';
+    res.json({success: true, message: 'User logged out.'});
 });
 
 app.listen(PORT, () => {

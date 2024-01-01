@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
         errorDiv.style.color = '#ed4337';
         let errorText = document.createTextNode(message);
         errorDiv.appendChild(errorText);
-        console.log(errorText);
         loginFormId.appendChild(errorDiv);
     }
 
@@ -61,12 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function registerForm() {
-        console.log('coming to register form');
         let registerFormUsername = document.getElementById('register-username').value;
         let registerFormPassword = document.getElementById('register-password').value;
 
-        console.log('username:', registerFormUsername);
-        console.log('password:', registerFormPassword);
 
         if(registerFormUsername !== '' && registerFormPassword !== '') {
             fetch('/api/RegisterUser', {
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log('User successfully registered!');
+                        document.getElementById('registerForm').reset();
                         switchForm();
                     } else {
                         console.log('Failed to register user:', data.message);

@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let todoListId = document.getElementById('todoList');
     let addItemInputId = document.getElementById('addItemInput');
     let deleteItemsId = document.getElementById('deleteItems');
+    let logoutUserId = document.getElementById('logoutUser');
 
     fetchTodoList();
 
@@ -19,6 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
     deleteItemsId.addEventListener('click', function (event) {
         event.preventDefault();
         postListToAPI('/api/DeleteCheckedItems');
+    });
+
+    logoutUserId.addEventListener('click', function (event) {
+        event.preventDefault();
+        logoutUser('/api/LogoutUser');
     });
 
     function addItem() {
@@ -114,5 +120,22 @@ document.addEventListener('DOMContentLoaded', function() {
             newItem.appendChild(label);
             todoListId.appendChild(newItem);
         }
+    }
+
+    function logoutUser(url) {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            // body: JSON.stringify({ list: todoList.items, checkbox: todoList.checkbox}),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = 'index.html';
+                }
+            })
+            .catch(error => console.error(error));
     }
 });

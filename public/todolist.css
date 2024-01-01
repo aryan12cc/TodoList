@@ -90,3 +90,14 @@ span.checkmark:after {
 input[type="checkbox"]:checked + span.checkmark:after {
     display: block;
 }
+
+.logoutButton {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
