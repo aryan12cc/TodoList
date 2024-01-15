@@ -46,10 +46,6 @@ async function comparePasswords(passwordToCheck, hashedPassword) {
     }
 }
 
-app.get('/api/TodoList', (req, res) => {
-    res.json(userTodoList);
-});
-
 function isLoggedIn(req, res, next) {
     if(userTodoListFile === '') {
         res.status(401).json({error: 'Unauthorized: Access Denied'});
@@ -62,30 +58,6 @@ function isLoggedIn(req, res, next) {
 app.get('/api/CheckLogin', isLoggedIn, (req, res) => {
     res.json({success: true, message: 'Access granted'});
 });
-
-function operateTodoList(req, operation) {
-    if(operation == 'add') {
-        const newItem = {
-            ...item, 
-            content: req.body.newItem, 
-            isChecked: false
-        };
-        userTodoList.push(newItem);
-        writeTodoListToFile(userTodoListFile);
-        return;
-    }
-    const currentTodoList = req.body.list;
-    const currentCheckmarkList = req.body.checkbox;
-    userTodoList = [];
-    for(let i = 0; i < currentTodoList.length; i++) {
-        if(operation == 'delete' && currentCheckmarkList[i] == true) {
-            continue;
-        }
-        let item = {content: currentTodoList[i], isChecked: currentCheckmarkList[i]};
-        userTodoList.push(item);
-    }
-    writeTodoListToFile(userTodoListFile);
-}
 
 function readFromFile(filePath) {
     fs.readFile(filePath, 'utf8', (err, data) => {
@@ -150,6 +122,34 @@ function appendToFile(filePath, data) {
             console.error('Error appending to file:', err);
         }
     });
+}
+
+app.get('/api/TodoList', (req, res) => {
+    res.json(userTodoList);
+});
+
+function operateTodoList(req, operation) {
+    if(operation == 'add') {
+        const newItem = {
+            ...item, 
+            content: req.body.newItem, 
+            isChecked: false
+        };
+        userTodoList.push(newItem);
+        writeTodoListToFile(userTodoListFile);
+        return;
+    }
+    const currentTodoList = req.body.list;
+    const currentCheckmarkList = req.body.checkbox;
+    userTodoList = [];
+    for(let i = 0; i < currentTodoList.length; i++) {
+        if(operation == 'delete' && currentCheckmarkList[i] == true) {
+            continue;
+        }
+        let item = {content: currentTodoList[i], isChecked: currentCheckmarkList[i]};
+        userTodoList.push(item);
+    }
+    writeTodoListToFile(userTodoListFile);
 }
 
 app.post('/api/LoginUser', (req, res) => {
