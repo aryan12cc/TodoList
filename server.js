@@ -86,7 +86,7 @@ function writeTodoListToFile(filePath) {
     });
 }
 
-function searchFile(filePath, username, password, checkPasssword) {
+async function searchFile(filePath, username, password, checkPasssword) {
     try {
         if(!fs.existsSync(filePath)) {
             fs.writeFileSync(filePath, '');
@@ -101,7 +101,8 @@ function searchFile(filePath, username, password, checkPasssword) {
             if(match) {
                 const currentUsername = match[1];
                 const currentPassword = match[2];
-                if(username === currentUsername && comparePasswords(password, currentPassword)) {
+                const passwordsMatch = await comparePasswords(password, currentPassword);
+                if(username === currentUsername && passwordsMatch) {
                     return true;
                 }
                 if(username === currentUsername && !checkPasssword) {
@@ -158,8 +159,8 @@ function operateTodoList(req, operation) {
     writeTodoListToFile(userTodoListFile);
 }
 
-app.post('/api/LoginUser', (req, res) => {
-    let result = searchFile(DataBase, req.body.username, req.body.password, true);
+app.post('/api/LoginUser', async (req, res) => {
+    let result = await searchFile(DataBase, req.body.username, req.body.password, true);
     if(result == true) {
         userTodoListFile = req.body.username + '.txt';
         userTodoList = readFromFile(userTodoListFile);
@@ -170,7 +171,7 @@ app.post('/api/LoginUser', (req, res) => {
     }
 });
 
-app.post('/api/RegisterUser', (req, res) => {
+app.post('/api/RegisterUser', async (req, res) => {
     let result = searchFile(DataBase, req.body.username, '', false);
     if(result == true) {
         res.json({success: false, message: 'Username already taken.'});
