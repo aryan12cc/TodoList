@@ -50,6 +50,19 @@ app.get('/api/TodoList', (req, res) => {
     res.json(userTodoList);
 });
 
+function isLoggedIn(req, res, next) {
+    if(userTodoListFile === '') {
+        res.status(401).json({error: 'Unauthorized: Access Denied'});
+    }
+    else {
+        next();
+    }
+}
+
+app.get('/api/CheckLogin', isLoggedIn, (req, res) => {
+    res.json({success: true, message: 'Access granted'});
+});
+
 function operateTodoList(req, operation) {
     if(operation == 'add') {
         const newItem = {

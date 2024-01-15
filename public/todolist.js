@@ -5,6 +5,26 @@ document.addEventListener('DOMContentLoaded', function() {
     let deleteItemsId = document.getElementById('deleteItems');
     let logoutUserId = document.getElementById('logoutUser');
 
+    fetch('/api/CheckLogin', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if(response.status == 401) {
+                window.location.href = 'index.html';
+            }
+            else if(response.ok) {
+                return response.json();
+            }
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        })
     fetchTodoList();
 
     addItemFormId.addEventListener('submit', function (event) {
