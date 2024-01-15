@@ -109,9 +109,6 @@ async function searchFile(filePath, username, password, checkPasssword) {
                     return true;
                 }
             }
-            else {
-                console.error('Invalid format for username:password');
-            }
         }
         return false;
     }

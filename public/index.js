@@ -24,11 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showLoginErrorMessage(message) {
         if(errorMessageShown === true) return;
-        let errorDiv = document.createElement('invalid-username');
-        errorDiv.style.color = '#ed4337';
-        let errorText = document.createTextNode(message);
-        errorDiv.appendChild(errorText);
-        loginFormId.appendChild(errorDiv);
+        let errorDiv = document.getElementById('invalid-username');
+        errorDiv.style.display = 'block';
     }
 
     function loginForm() {
@@ -46,8 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // let errorDiv = document.getElementById('invalid-username');
-                        // errorDiv.remove();
+                        if(errorMessageShown) {
+                            let errorDiv = document.getElementById('invalid-username');
+                            errorDiv.style.display = 'none';
+                        }
                         errorMessageShown = false;
                         window.location.href = 'todolist.html';
                     } else {
@@ -88,6 +87,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function switchForm() {
         loginFormId.style.display = loginFormId.style.display === 'block' ? 'none' : 'block';
         registerFormId.style.display = registerFormId.style.display === 'block' ? 'none' : 'block';
+
+        if(errorMessageShown) {
+            errorMessageShown = false;
+            let errorDiv = document.getElementById('invalid-username');
+            errorDiv.style.display = 'none';
+        }
 
         let content = document.querySelector('.switch p').innerHTML;
         if(loginFormId.style.display === 'none') {

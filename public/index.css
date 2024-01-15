@@ -56,3 +56,7 @@ ul {
     list-style-position: outside;
     padding-left: 20px;
 }
+
+.invalid-username {
+    color: #ed4337;
+}
