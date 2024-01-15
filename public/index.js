@@ -62,6 +62,12 @@ document.addEventListener('DOMContentLoaded', function() {
         let registerFormUsername = document.getElementById('register-username').value;
         let registerFormPassword = document.getElementById('register-password').value;
 
+        let usernameUniqueDiv = document.getElementById('register-username-unique');
+        let passwordLengthDiv = document.getElementById('register-password-length');
+        let passwordNumberDiv = document.getElementById('register-password-number');
+        let passwordCapitalDiv = document.getElementById('register-password-capital');
+        let passwordSpecialDiv = document.getElementById('register-password-special');
+
 
         if(registerFormUsername !== '' && registerFormPassword !== '') {
             fetch('/api/RegisterUser', {
@@ -75,9 +81,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.success) {
                         document.getElementById('registerForm').reset();
+                        usernameUniqueDiv.style.color = 'black';
+                        passwordLengthDiv.style.color = 'black';
+                        passwordNumberDiv.style.color = 'black';
+                        passwordCapitalDiv.style.color = 'black';
+                        passwordSpecialDiv.style.color = 'black';
                         switchForm();
                     } else {
-                        console.log('Failed to register user:', data.message);
+                        usernameUniqueDiv.style.color = (!data.username_taken) ? 'black' : 'red';
+                        passwordLengthDiv.style.color = (!data.length) ? 'black' : 'red';
+                        passwordNumberDiv.style.color = (!data.number) ? 'black' : 'red';
+                        passwordCapitalDiv.style.color = (!data.capital) ? 'black' : 'red';
+                        passwordSpecialDiv.style.color = (!data.special) ? 'black': 'red';
                     }
                 })
                 .catch(error => console.error(error));
@@ -85,6 +100,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function switchForm() {
+        if(registerFormId.style.display === 'block') {
+            let usernameUniqueDiv = document.getElementById('register-username-unique');
+            let passwordLengthDiv = document.getElementById('register-password-length');
+            let passwordNumberDiv = document.getElementById('register-password-number');
+            let passwordCapitalDiv = document.getElementById('register-password-capital');
+            let passwordSpecialDiv = document.getElementById('register-password-special');
+            usernameUniqueDiv.style.color = 'black';
+            passwordLengthDiv.style.color = 'black';
+            passwordNumberDiv.style.color = 'black';
+            passwordCapitalDiv.style.color = 'black';
+            passwordSpecialDiv.style.color = 'black';
+        }
         loginFormId.style.display = loginFormId.style.display === 'block' ? 'none' : 'block';
         registerFormId.style.display = registerFormId.style.display === 'block' ? 'none' : 'block';
 

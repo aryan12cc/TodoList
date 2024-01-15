@@ -169,42 +169,27 @@ app.post('/api/LoginUser', async (req, res) => {
 });
 
 app.post('/api/RegisterUser', async (req, res) => {
-    let result = searchFile(DataBase, req.body.username, '', false);
-    if(result == true) {
-        res.json({success: false, message: 'Username already taken.'});
-        return;
-    }
-    const password = req.body.password;
-    if(password.length < 8) {
-        res.json({success: false, message: 'Password must be of atleast 8 characters.'});
-        return;
-    }
-    let number = false, special = false, capital = false;
+    let username_taken = false, noNumber = true, noSpecial = true, noCapital = true, length = false;
+    username_taken = await searchFile(DataBase, req.body.username, '', false);
+    length = (req.body.password.length < 8) ? true : false;
     req.body.password.split('').forEach(function(currentCharacter) {
         if(currentCharacter >= '0' && currentCharacter <= '9') {
-            number = true;
+            noNumber = false;
         }
         else if(currentCharacter >= 'A' && currentCharacter <= 'Z') {
-            capital = true;
+            noCapital = false;
         }
         else if(currentCharacter < 'a' || currentCharacter > 'z') {
-            special = true;
+            noSpecial = false;
         }
     });
-    if(number == false) {
-        res.json({success: false, message: 'Password must contain a number.'});
-        return;
+    if(!username_taken && !noNumber && !noSpecial && !noCapital && !length) {
+        hashPasswordAndAppend(req.body.username, req.body.password);
+        res.json({success: true, message: 'Username added. Please login'});
     }
-    if(capital == false) {
-        res.json({success: false, message: 'Password must contain a capital letter.'});
-        return;
+    else {
+        res.json({success: false, message: 'The following do not match', username_taken: username_taken, number: noNumber, special: noSpecial, capital: noCapital, length: length});
     }
-    if(special == false) {
-        res.json({success: false, message: 'Password must contain a special character.'});
-        return;
-    }
-    hashPasswordAndAppend(req.body.username, req.body.password);
-    res.json({success: true, message: 'Username added. Please login.'});
 });
 
 app.post('/api/AddItem', (req, res) => {
