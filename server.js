@@ -88,6 +88,9 @@ function writeTodoListToFile(filePath) {
 
 function searchFile(filePath, username, password, checkPasssword) {
     try {
+        if(!fs.existsSync(filePath)) {
+            fs.writeFileSync(filePath, '');
+        }
         const data = fs.readFileSync(filePath, 'utf8');
 
         const allUsers = data.split('\n');
@@ -117,6 +120,9 @@ function searchFile(filePath, username, password, checkPasssword) {
 }
 
 function appendToFile(filePath, data) {
+    if(!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, '');
+    }
     fs.appendFile(filePath, data, 'utf8', (err) => {
         if (err) {
             console.error('Error appending to file:', err);
