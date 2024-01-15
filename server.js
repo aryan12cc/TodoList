@@ -36,8 +36,11 @@ function hashPasswordAndAppend(username, passwordToHash) {
 }
 
 async function comparePasswords(passwordToCheck, hashedPassword) {
+    console.log('Comparing passwords');
+    console.log(passwordToCheck, hashedPassword)
     try {
         const res = await bcrypt.compare(passwordToCheck, hashedPassword);
+        console.log(res)
         return res;
     }
     catch (error) {
@@ -86,7 +89,7 @@ function writeTodoListToFile(filePath) {
     });
 }
 
-function searchFile(filePath, username, password, checkPasssword) {
+async function searchFile(filePath, username, password, checkPasssword) {
     try {
         if(!fs.existsSync(filePath)) {
             fs.writeFileSync(filePath, '');
@@ -101,8 +104,12 @@ function searchFile(filePath, username, password, checkPasssword) {
             if(match) {
                 const currentUsername = match[1];
                 const currentPassword = match[2];
-                if(username === currentUsername && comparePasswords(password, currentPassword)) {
+                if(await comparePasswords(password, currentPassword)) {
+                    console.log('Password matched');
                     return true;
+                }
+                else{
+                    return false;
                 }
                 if(username === currentUsername && !checkPasssword) {
                     return true;
@@ -158,9 +165,10 @@ function operateTodoList(req, operation) {
     writeTodoListToFile(userTodoListFile);
 }
 
-app.post('/api/LoginUser', (req, res) => {
-    let result = searchFile(DataBase, req.body.username, req.body.password, true);
-    if(result == true) {
+app.post('/api/LoginUser', async (req, res) => {
+    let result = await searchFile(DataBase, req.body.username, req.body.password, true);
+    console.log("result:", result);
+    if(result) {
         userTodoListFile = req.body.username + '.txt';
         userTodoList = readFromFile(userTodoListFile);
         res.json({success: true, message: 'Logged in successfully.'});
